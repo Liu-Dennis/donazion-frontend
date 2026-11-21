@@ -13,7 +13,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <Authenticator.Provider>
       <DonzaionNavbar />
-      <html lang="en">
+      <html lang="en" data-scroll-behavior="smooth">
         <body>
           {children}
         </body>

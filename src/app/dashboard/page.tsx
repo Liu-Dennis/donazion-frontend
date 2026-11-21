@@ -2,19 +2,19 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { redirect } from "next/navigation";
 
-export default function Login() {
+export default function Dashboard() {
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
-  const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const { user } = useAuthenticator((context) => [context.user]);
 
   if (authStatus === "unauthenticated") {
-    redirect("/login");
+    redirect("/login?return=dashboard");
   }
 
   return (
     <div>
       {JSON.stringify(authStatus)}
       <p>Welcome {JSON.stringify(user)}</p>
-      <button onClick={signOut}>Sign out</button>
+      <a href="/logout">Sign out</a>
     </div>
   );
 }
