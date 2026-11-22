@@ -10,6 +10,16 @@ export default function Dashboard() {
     redirect("/login?return=dashboard");
   }
 
+  useEffect(() =>  {
+    async function fetch() {
+      const { tokens } = await fetchAuthSession()
+      console.log('ID token:', tokens?.idToken?.toString())
+      console.log('Access token:', tokens?.accessToken?.toString())
+    }
+    fetch()
+  }, []);
+
+
   return (
     <div>
       {JSON.stringify(authStatus)}
@@ -18,3 +28,6 @@ export default function Dashboard() {
     </div>
   );
 }
+import { fetchAuthSession } from 'aws-amplify/auth';
+import { useEffect } from "react";
+

@@ -20,6 +20,6 @@ export default function Login() {
   }
 
   return (
-    <Authenticator />
+    <Authenticator signUpAttributes={['email']} />
   );
 }
