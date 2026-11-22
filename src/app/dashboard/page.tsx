@@ -9,9 +9,9 @@ import { useState, useEffect } from "react"
 const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
 
 type CategoryInfo = {
-  name: string;
-  numItems: number;
-  totalValue: number
+  cat_name: string;
+  cat_itemCount: number;
+  cat_totalValue: string
 }
 type DashboardData = {
   grandItems: number;
@@ -30,7 +30,7 @@ export default function Dashboard() {
   //   redirect("/login?return=dashboard")
   // }
 
-   const [data, setData] = useState<DashboardData | null>(null)
+  const [data, setData] = useState<DashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export default function Dashboard() {
 
         {data && (
           <>
-            <p>Total items: {data.grandItems}</p>
-            <p>Total value: ${Number(data.grandValue).toFixed(2)}</p>
+            <p>Grand items: {data.grandItems}</p>
+            <p>Grand value: {data.grandValue}</p>
             <ul>
               {data.categoryInfo.map((c) => (
-                <li key={c.name}>
-                  {c.name}: {c.numItems} items, ${c.totalValue.toFixed(2)}
-                </li>
+                <p key = {c.cat_name}>
+                  {c.cat_name}: {c.cat_itemCount} items, Total Value of ${c.cat_totalValue}
+                </p>
               ))}
             </ul>
           </>
