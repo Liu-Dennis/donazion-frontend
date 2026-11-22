@@ -55,8 +55,9 @@ export default function Dashboard() {
         console.log('ID token:', idToken)
         console.log('Access token:', accessToken)
 
-        //const userId = tokens?.idToken?.payload.sub as string
-        const userId = "aa"
+        const userId = tokens?.idToken?.payload.sub as string
+        console.log("to manually create thing with given user id:", userId)
+        //const userId = "aa"
         const res = await fetch(showDashAPI, {
           method: "POST",
           headers: {
@@ -101,7 +102,7 @@ export default function Dashboard() {
             <ul>
               {data.categoryInfo.map((c) => (
                 <p key = {c.cat_name}>
-                  {c.cat_name}: {c.cat_itemCount} items, Total Value of ${c.cat_totalValue}
+                  {c.cat_name}: {c.cat_itemCount} item types, Total Value of ${c.cat_totalValue}
                 </p>
               ))}
             </ul>
