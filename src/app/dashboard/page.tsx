@@ -1,11 +1,10 @@
 "use client"
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { redirect } from "next/navigation";
-import { fetchAuthSession } from 'aws-amplify/auth';
-import { useEffect } from "react";
-import { useState } from "react"
 import type { ChangeEvent } from "react"
-
+import { useAuthenticator } from "@aws-amplify/ui-react"
+import { redirect, useRouter } from "next/navigation"
+import { fetchAuthSession } from 'aws-amplify/auth'
+import { useState, useEffect } from "react"
+//import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
 
 const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
 
@@ -13,13 +12,9 @@ type Entry = { category: string; name: string; highLimit: number; lowLimit: numb
 
 const blank = { category: "", name: "", highLimit: "", lowLimit: "" }
 
-import { useAuthenticator } from "@aws-amplify/ui-react"
-import { redirect, useRouter } from "next/navigation"
-import { fetchAuthSession } from 'aws-amplify/auth'
-import { useState, useEffect } from "react"
-//import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
-
 const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
+
+const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
 
 type CategoryInfo = {
   cat_name: string;
@@ -45,6 +40,49 @@ export default function Dashboard() {
 
   const [data, setData] = useState<DashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  async function addCategoryAPI() {
+      //ensure tokens exist
+      const { tokens } = await fetchAuthSession()
+      const idToken = tokens?.idToken?.toString()
+      const accessToken = tokens?.accessToken?.toString()
+
+      if(!idToken) throw new Error("No ID token in session")        
+        
+      if (!accessToken) throw new Error("No token in session")
+      console.log('ID token:', idToken)
+      console.log('Access token:', accessToken)
+
+      //receive cat_name
+      const name = document.getElementById("cat_name") as HTMLInputElement
+      const cat_name = String(name.value)
+      //lazy loading, orgo_id can only be 0
+      const orgo_id = 0
+      console.log("this work?")
+      const res = await fetch(addCatAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": idToken},
+        body: JSON.stringify({
+          "orgo_id" : orgo_id,
+          "cat_name" : cat_name
+        })
+      })
+      console.log("here?")
+
+      const body = await res.json()
+
+      if(res.status == 400){
+        throw new Error(body.error ?? "Invalid Authentication")
+      }
+
+      if(!res.ok){
+        throw new Error('API Error ${res.status}: ${JSON.stringify(body)}')
+      }
+      return true
+  }
+
 
   useEffect(() => {
     if(authStatus === "unauthenticated") {
@@ -145,6 +183,9 @@ export default function Dashboard() {
     <div>
       <p>Welcome {user?.signInDetails?.loginId}</p>
       <a href="/logout">Sign out</a>
+      <p>Create Category</p>
+      <input id= "cat_name" type="text" placeholder="Category name"/>
+      <button type= "button" onClick={() => addCategoryAPI()}>Create New Category</button>
       <p>Upload items</p>
       <input placeholder="Category name" {...field("category")} />
       <input placeholder="Item name" {...field("name")} />
