@@ -22,7 +22,7 @@ export default function donorDashboard() {
     }
     return (
         <div>
-            <p>Donor type shit</p>
+            
             <div>
                 <p>Please enter a valid Donation Center ID</p>
                 <input id = "donationcenter_id" type="string"></input>
