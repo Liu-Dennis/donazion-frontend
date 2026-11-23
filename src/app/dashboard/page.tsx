@@ -6,15 +6,22 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
 //import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
 
+
+/** RED ALERT
+ *  CURRENTLY, THESE LINKS POINT TO OUR INDIVIDUAL API STACKS, NOT THE PROD ONES
+ *  NEEDS TO BE CHANGED BEFORE THE FINAL SUBMISSION
+ */
+const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
+
+const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
+
 const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
 
 type Entry = { category: string; name: string; highLimit: number; lowLimit: number }
 
 const blank = { category: "", name: "", highLimit: "", lowLimit: "" }
 
-const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
 
-const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
 
 type CategoryInfo = {
   cat_name: string;
@@ -34,10 +41,8 @@ export default function Dashboard() {
     context.authStatus,
     context.user
   ])
-  // if (authStatus === "unauthenticated") {
-  //   redirect("/login?return=dashboard")
-  // }
-
+  
+  //Establishing variables to inherit data from messages
   const [data, setData] = useState<DashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -97,9 +102,9 @@ export default function Dashboard() {
   useEffect(() =>  {
     if(authStatus !== "authenticated") return
 
-    async function callApi(){
+    async function showDashbaordApi(){
       try {
-        //
+        
         const { tokens } = await fetchAuthSession()
         const idToken = tokens?.idToken?.toString()
         const accessToken = tokens?.accessToken?.toString()
@@ -107,9 +112,14 @@ export default function Dashboard() {
         if(!idToken) throw new Error("No ID token in session")        
         
         if (!accessToken) throw new Error("No token in session")
+        
+        //Testing stuff, should probably be deleted for security reasons
+        //TODO
         console.log('ID token:', idToken)
         console.log('Access token:', accessToken)
 
+
+        
         const userId = tokens?.idToken?.payload.sub as string
         console.log("to manually create thing with given user id:", userId)
         //const userId = "aa"
@@ -126,27 +136,28 @@ export default function Dashboard() {
         if(res.status == 400){
           throw new Error(body.error ?? "Invalid Authentication")
         }
-
         if(!res.ok){
           throw new Error('API Error ${res.status}: ${JSON.stringify(body)}')
         }
-        
         setData(body as DashboardData)
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e))
       } 
     }
-    callApi()
+    showDashbaordApi()
   }, [authStatus]);
 
 
-
+  //helper function for addCategoryItem
   // Bind an input to one field of the form
   const field = (key: keyof typeof blank) => ({
     value: form[key],
     onChange: (e: ChangeEvent<HTMLInputElement>) => setForm({ ...form, [key]: e.target.value }),
   })
 
+
+  //Helper function for addCategoryItem use case
+  //Interprets button input and sends API request
   function add() {
     const highLimit = Number(form.highLimit)
     const lowLimit = Number(form.lowLimit)
