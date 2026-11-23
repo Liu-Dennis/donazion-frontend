@@ -14,6 +14,20 @@ export class Box {
         this.uid = this.uid + 1
         return this.uid
     }
+
+    removeItem(uid: number){
+        let list = []
+        if (this.item !== undefined){
+            for (let i = 0; i < this.item.length; i++){
+                if (this.item[i].uid != uid){
+                    list.push(this.item[i])
+                }
+            }
+            this.item = list
+            return true
+        }
+        return false
+    }
 }
 
 export class Item {
@@ -41,5 +55,19 @@ export class Model {
     incBid(){
         this.bid += 1
         return this.bid
+    }
+
+    removeBox(bid: number){
+        let list = []
+        if (this.boxes !== undefined){
+            for (let i = 0; i < this.boxes.length; i++){
+                if (this.boxes[i].box_id != bid){
+                    list.push(this.boxes[i])
+                }
+            }
+            this.boxes = list
+            return true
+        }
+        return false
     }
 }
