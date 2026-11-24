@@ -28,7 +28,7 @@ export default function Onboard() {
 
     try {
       const res = await fetch(
-        "https://ojaff3t5pe.execute-api.us-east-1.amazonaws.com/prod/api/onboard",
+        `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/onboard`,
         {
           method: "POST",
           headers: {

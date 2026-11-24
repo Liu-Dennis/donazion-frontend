@@ -6,17 +6,12 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
 import Link from 'next/link';
 
-//import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
-
-const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
-
 type Entry = { category: string; name: string; highLimit: number; lowLimit: number }
 
 const blank = { category: "", name: "", highLimit: "", lowLimit: "" }
-
-const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
-
-const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
+const showDashAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/dcShowDash`
+const uploadItemsAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/uploadCategoryItem`
+const addCatAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/addCat`
 
 type CategoryInfo = {
   cat_name: string;
