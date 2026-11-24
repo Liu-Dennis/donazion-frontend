@@ -1,7 +1,7 @@
 "use client"
 import { useAuthenticator, Authenticator} from "@aws-amplify/ui-react";
 import { redirect, useSearchParams} from "next/navigation";
-import { JSX, Suspense } from "react";
+import { Suspense } from "react";
 
 const LoginElement = () => {
   const searchParams = useSearchParams()
