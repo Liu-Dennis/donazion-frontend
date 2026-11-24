@@ -28,7 +28,7 @@ jobs:
           aws-region: "us-east-1"
       - name: Build static page
         env: 
-          AWS_ENDPOINT: ${{ vars.AWS_ENDPOINT }}
+          NEXT_PUBLIC_AWS_ENDPOINT: ${{ vars.AWS_ENDPOINT }}
         run: npm run build
       - name: Deploy to AWS
         env:
