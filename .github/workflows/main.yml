@@ -2,7 +2,7 @@ name: Build and Deploy to S3 CI/CD
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 permissions:
   id-token: write
@@ -26,12 +26,11 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::157108548075:role/s3-sync
           aws-region: "us-east-1"
-      # deploy *all* the stacks
       - name: Build static page
         env: 
-          AWS_ENDPOINT: ${{ secrets.AWS_ENDPOINT }}
+          AWS_ENDPOINT: ${{ vars.AWS_ENDPOINT }}
         run: npm run build
       - name: Deploy to AWS
         run: |
           aws sts get-caller-identity
-          aws s3 sync ./out s3://dhliucalc
+          aws s3 sync ./out $AWS_S3_URI --delete
