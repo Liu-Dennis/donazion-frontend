@@ -31,4 +31,6 @@ jobs:
           AWS_ENDPOINT: ${{ vars.AWS_ENDPOINT }}
         run: npm run build
       - name: Deploy to AWS
-        run: aws s3 sync ./out $vars.AWS_S3_URI --delete
+        env:
+          URI: ${{ vars.AWS_S3_URI }}
+        run: aws s3 sync ./out $URI --delete
