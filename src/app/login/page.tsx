@@ -1,8 +1,9 @@
 "use client"
 import { useAuthenticator, Authenticator} from "@aws-amplify/ui-react";
 import { redirect, useSearchParams} from "next/navigation";
+import { Suspense } from "react";
 
-export default function Login() {
+const LoginElement = () => {
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('return')
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
@@ -18,8 +19,15 @@ export default function Login() {
       redirect("/");
     }
   }
-
   return (
     <Authenticator signUpAttributes={['email']} />
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={"loading"}>
+      <LoginElement/>
+    </Suspense>
   );
 }

@@ -4,6 +4,8 @@ import { useAuthenticator } from "@aws-amplify/ui-react"
 import { redirect, useRouter } from "next/navigation"
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
+import Link from 'next/link';
+
 //import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
 
 const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
@@ -182,7 +184,7 @@ export default function Dashboard() {
   return (
     <div>
       <p>Welcome {user?.signInDetails?.loginId}</p>
-      <link href="/logout">Sign out</link>
+      <Link href="/logout">Sign out</Link>
       <p>Create Category</p>
       <input id= "cat_name" type="text" placeholder="Category name"/>
       <button type= "button" onClick={() => addCategoryAPI()}>Create New Category</button>
