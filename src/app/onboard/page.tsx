@@ -164,7 +164,7 @@ export default function Onboard() {
                     <Form.Select
                       name="dc-state"
                       required
-                      defaultValue="Choose..."
+                      defaultValue="Select..."
                     >
                       <option disabled>Select...</option>
                       {states}
