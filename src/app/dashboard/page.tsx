@@ -13,6 +13,8 @@ import { useState, useEffect } from "react"
  */
 const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
 
+const dcDelete = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcDelete"
+
 const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
 
 const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
@@ -63,7 +65,7 @@ export default function Dashboard() {
       const cat_name = String(name.value)
       //lazy loading, orgo_id can only be 0
       const orgo_id = 0
-      console.log("this work?")
+      //console.log("this work?")
       const res = await fetch(addCatAPI, {
         method: "POST",
         headers: {
@@ -74,7 +76,7 @@ export default function Dashboard() {
           "cat_name" : cat_name
         })
       })
-      console.log("here?")
+      //console.log("here?")
 
       const body = await res.json()
 
@@ -190,6 +192,39 @@ export default function Dashboard() {
     }
   }
 
+  //Helper function for Delete DC
+  async function deleteDC(){
+    const { tokens } = await fetchAuthSession()
+      const idToken = tokens?.idToken?.toString()
+      const accessToken = tokens?.accessToken?.toString()
+
+      if(!idToken) throw new Error("No ID token in session")
+      if(!accessToken) throw new Error("No Access token in session")
+
+      const userId = tokens?.idToken?.payload.sub as string
+
+      const res = await fetch(dcDelete, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": idToken},
+        body: JSON.stringify({
+          "used_id":userId
+        })
+      }) 
+
+      const body = await res.json()
+
+      if(res.status == 400){
+        throw new Error(body.error ?? "Invalid Authentication")
+      }
+
+      if(!res.ok){
+        throw new Error('API Error ${res.status}: ${JSON.stringify(body)}')
+      }
+      return true
+  }
+
   return (
     <div>
       <p>Welcome {user?.signInDetails?.loginId}</p>
@@ -230,6 +265,10 @@ export default function Dashboard() {
             </ul>
           </>
         )}
+      </div>
+      <div>
+        <p>Do Not Delete Unless Sure</p>
+        <button onClick={() => deleteDC()} style={{color:'black', backgroundColor:'red',}}>DELETE</button>
       </div>
     </div>
   );
