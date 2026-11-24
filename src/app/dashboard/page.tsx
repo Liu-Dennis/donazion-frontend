@@ -182,7 +182,7 @@ export default function Dashboard() {
   return (
     <div>
       <p>Welcome {user?.signInDetails?.loginId}</p>
-      <a href="/logout">Sign out</a>
+      <link href="/logout">Sign out</link>
       <p>Create Category</p>
       <input id= "cat_name" type="text" placeholder="Category name"/>
       <button type= "button" onClick={() => addCategoryAPI()}>Create New Category</button>
