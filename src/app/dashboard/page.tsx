@@ -9,9 +9,9 @@ import Link from 'next/link';
 type Entry = { category: string; name: string; highLimit: number; lowLimit: number }
 
 const blank = { category: "", name: "", highLimit: "", lowLimit: "" }
-const showDashAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}dcShowDash`
-const uploadItemsAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}uploadCategoryItem`
-const addCatAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}addCat`
+const showDashAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/dcShowDash`
+const uploadItemsAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/uploadCategoryItem`
+const addCatAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/addCat`
 
 type CategoryInfo = {
   cat_name: string;
