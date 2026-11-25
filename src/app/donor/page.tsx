@@ -15,27 +15,37 @@ export default function donorDashboard() {
     const createBox = () => {
         const donationcenter_id = document.getElementById("donationcenter_id") as HTMLInputElement
         model.boxes.push(new Box(model.incBid(), donationcenter_id.value))
-        console.log("Created new box of id: ", donationcenter_id.value)
-        console.log(model.boxes[0])
         setRedraw(redraw+1)
         //testing note, aa and ab are basically the only oens that are populated right now
         return 1;
     }
 
-    const addItem = (box: Box, boxIndex: number) => {
-        const idInput = document.getElementById(`iid-${boxIndex}`) as HTMLInputElement;
-        const valInput = document.getElementById(`value-${boxIndex}`) as HTMLInputElement;
+    const removeBox = (model: Model, boxIndex: number) => {
+        const x = model.removeBox(boxIndex)
+        setRedraw(redraw+1)
+        return x
+    }
 
-        const id = Number(idInput.value);
-        const val = Number(valInput.value);
+    const removeItem = (box: Box, item_id: number) => {
+        const x = box.removeItem(item_id)
+        setRedraw(redraw+1)
+        return x
+    }
+
+    const addItem = (box: Box, boxIndex: number) => {
+        const idInput = document.getElementById(`iid-${boxIndex}`) as HTMLInputElement
+        const valInput = document.getElementById(`value-${boxIndex}`) as HTMLInputElement
+
+        const id = Number(idInput.value)
+        const val = Number(valInput.value)
         if (idInput.value === "" || valInput.value === "" || Number.isNaN(id) || Number.isNaN(val)) {
-            return false;
+            return false
         }
-        (box.item ??= []).push(new Item(box.incUid(), id, val));
-        idInput.value = "";
-        valInput.value = "";
-        setRedraw(redraw + 1);
-        return true;
+        (box.item ??= []).push(new Item(box.incUid(), id, val))
+        idInput.value = ""
+        valInput.value = ""
+        setRedraw(redraw + 1)
+        return true
     }
 
     const sendBox = (box: Box, boxIndex: number) => {
@@ -47,17 +57,19 @@ export default function donorDashboard() {
             
             <div>
                 <p>Please enter a valid Donation Center ID</p>
-                <input id = "donationcenter_id" type="string"></input>
+                <input id = "donationcenter_id" type="string" placeholder="Donation Center ID"></input>
                 <button className="button" onClick= {() => createBox()}>Create Box</button>
                 <br></br>
                 <ul>
                     {model.boxes.map((box, boxIndex) => (
                     <li key={box.box_id ?? boxIndex}>
-                        Box {boxIndex + 1}
+                        Box: {boxIndex + 1} Sending to Donation Center: {box.dc_id} &nbsp;
+                        <button onClick ={() => removeBox(model, box.box_id)}> Remove? </button>
                     <ul>
                         {box.item?.map((item) => (
                     <li key={item.uid}>
-                        Item: {item.item_id} Value: {item.item_value}
+                        Item: {item.item_id} Value: ${item.item_value} &nbsp; 
+                        <button onClick={() => removeItem(box, item.uid)}> Remove? </button>
                     </li>
                     ))}
                     <input id={`iid-${boxIndex}`} type="text" placeholder="Item ID" />
