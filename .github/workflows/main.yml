@@ -1,0 +1,36 @@
+name: Build and Deploy to S3 CI/CD
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building"
+      # get repo
+      - uses: actions/checkout@v7
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Install dependencies
+        run: npm ci
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::157108548075:role/s3-sync
+          aws-region: "us-east-1"
+      - name: Build static page
+        env: 
+          NEXT_PUBLIC_AWS_ENDPOINT: ${{ vars.AWS_ENDPOINT }}
+        run: npm run build
+      - name: Deploy to AWS
+        env:
+          URI: ${{ vars.AWS_S3_URI }}
+        run: aws s3 sync ./out $URI --delete

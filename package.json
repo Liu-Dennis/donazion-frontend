@@ -12,6 +12,7 @@
     "@aws-amplify/ui-react": "^6.15.7",
     "aws-amplify": "^6.22.2",
     "bootstrap": "^5.3.9",
+    "dotenv": "^18.0.10",
     "next": "16.4.6",
     "prettier": "^3.10.1",
     "react": "19.3.0",

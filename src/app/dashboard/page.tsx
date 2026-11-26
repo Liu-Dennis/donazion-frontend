@@ -4,26 +4,20 @@ import { useAuthenticator } from "@aws-amplify/ui-react"
 import { redirect, useRouter } from "next/navigation"
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
+import Link from 'next/link';
 //import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
 
 
-/** RED ALERT
- *  CURRENTLY, THESE LINKS POINT TO OUR INDIVIDUAL API STACKS, NOT THE PROD ONES
- *  NEEDS TO BE CHANGED BEFORE THE FINAL SUBMISSION
- */
-const showDashAPI = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcShowDash"
 
-const dcDelete = "https://ehkpleh7v4.execute-api.us-east-1.amazonaws.com/prod/api/dcDelete"
 
-const addCatAPI = "https://zj6w3p7qag.execute-api.us-east-1.amazonaws.com/prod/api/addCat"
-
-const uploadItemsAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/uploadCategoryItem"
 
 type Entry = { category: string; name: string; highLimit: number; lowLimit: number }
 
 const blank = { category: "", name: "", highLimit: "", lowLimit: "" }
-
-
+const showDashAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/dcShowDash`
+const uploadItemsAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/uploadCategoryItem`
+const addCatAPI = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/addCat`
+const dcDelete = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/dcDelete`
 
 type CategoryInfo = {
   cat_name: string;
@@ -228,7 +222,7 @@ export default function Dashboard() {
   return (
     <div>
       <p>Welcome {user?.signInDetails?.loginId}</p>
-      <a href="/logout">Sign out</a>
+      <Link href="/logout">Sign out</Link>
       <p>Create Category</p>
       <input id= "cat_name" type="text" placeholder="Category name"/>
       <button type= "button" onClick={() => addCategoryAPI()}>Create New Category</button>
