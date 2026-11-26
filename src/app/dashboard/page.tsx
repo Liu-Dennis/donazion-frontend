@@ -4,12 +4,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react"
 import { redirect, useRouter } from "next/navigation"
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
-import Link from 'next/link';
-//import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context"
-
-
-
-
+import Link from 'next/link'
 
 type Entry = { category: string; name: string; highLimit: number; lowLimit: number }
 
@@ -196,6 +191,7 @@ export default function Dashboard() {
       if(!accessToken) throw new Error("No Access token in session")
 
       const userId = tokens?.idToken?.payload.sub as string
+      //const userId = "ac"
 
       const res = await fetch(dcDelete, {
         method: "POST",
@@ -203,11 +199,12 @@ export default function Dashboard() {
           "Content-Type": "application/json",
           "Authorization": idToken},
         body: JSON.stringify({
-          "used_id":userId
+          "userId": userId
         })
       }) 
-
-      const body = await res.json()
+      
+      const text = await res.text()
+      const body = text ? JSON.parse(text) : null
 
       if(res.status == 400){
         throw new Error(body.error ?? "Invalid Authentication")
