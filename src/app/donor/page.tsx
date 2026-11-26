@@ -1,17 +1,28 @@
 "use client"
 
-import { useAuthenticator } from "@aws-amplify/ui-react"
-import { redirect, useRouter } from "next/navigation"
-import { fetchAuthSession } from 'aws-amplify/auth'
+//import { useAuthenticator } from "@aws-amplify/ui-react"
+//import { redirect, useRouter } from "next/navigation"
+//import { fetchAuthSession } from 'aws-amplify/auth'
 import { useState, useEffect } from "react"
 import React from 'react'
 import { Box, Item, Model } from './box'
+
+const donateAPI = "https://3a0daglx54.execute-api.us-east-1.amazonaws.com/prod/api/donate"
+
+type notDonated = {
+    itemId: number
+    value: number
+    reason: string
+}
 
 export default function donorDashboard() {
     const[model, setBox] = React.useState(new Model())
     const[redraw, setRedraw] = React.useState(0)
 
-
+    const [message, setMessage] = useState("")
+    const [error, setError] = useState<string | null>(null)
+    const [notDonated, setNotDonated] = useState<notDonated[]>([])
+    
     const createBox = () => {
         const donationcenter_id = document.getElementById("donationcenter_id") as HTMLInputElement
         model.boxes.push(new Box(model.incBid(), donationcenter_id.value))
@@ -48,8 +59,42 @@ export default function donorDashboard() {
         return true
     }
 
-    const sendBox = (box: Box, boxIndex: number) => {
-        return true
+        const sendBox = async (box: Box, boxIndex: number) => {
+        try {
+            if(!box.item || box.item.length === 0) throw new Error("Add at least one item first")
+
+            const res = await fetch(donateAPI, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "destination" : box.dc_id,
+                    "items" : box.item.map((it) => ({ itemId: it.item_id, value: it.item_value }))
+                })
+            })
+
+            const body = await res.json()
+
+            if(res.status == 400){
+                setNotDonated(body.malformed ?? [])
+                throw new Error(body.error ?? "Donation rejected")
+            }
+
+            if(!res.ok){
+                throw new Error(`API Error ${res.status}: ${JSON.stringify(body)}`)
+            }
+
+            box.item = []
+            setNotDonated(body.not_Donated ?? [])
+            setError(null)
+            setMessage(`${body.message}, total value of $${body.total_Value}`)
+            setRedraw(redraw + 1)
+            return true
+        } catch (e) {
+            setMessage("")
+            setError(e instanceof Error ? e.message : String(e))
+            return false
+        }
     }
 
     return (
@@ -81,6 +126,18 @@ export default function donorDashboard() {
             </li>
             ))}
             </ul>
+            <p>{message}</p>
+            {error && <p style={{ color: "red" }}>Error: {error}</p>}
+            {notDonated.length > 0 && (
+                <>
+                    <p>Items not donated:</p>
+                    <ul>
+                        {notDonated.map((m, i) => (
+                            <li key={i}>Item {String(m.itemId)}: {m.reason}</li>
+                        ))}
+                    </ul>
+                </>
+            )}
             </div>
         </div>
     )
